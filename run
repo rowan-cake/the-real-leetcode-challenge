@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+dry="0"
+while [[ $# > 0 ]]; do
+    if [[ $1 == "--dry" ]]; then
+        dry="1"
+    fi
+    shift
+done
+
+log() {
+    if [[ $dry == "1" ]]; then
+        echo "[DRY]: $@"
+    else
+        echo "$@"
+    fi
+}
+
+execute() {
+    log "executing: $@"
+    if [[ $dry == "0" ]]; then
+        "$@"
+    fi
+}
+
+
+round=0
+while [[ true ]]; do
+    round=$(($round + 1))
+    answer="n"
+    read -p "Are you ready (y/n)?" answer
+
+    if [[ $answer != "y" ]]; then
+        exit 0
+    fi
+
+    # to ensure we have proper writes for deleting your computer
+    sudo log "round $round"
+    log "waiting 20 minutes for a submit or else we delete your computer..."
+    log "also don't get it wrong..."
+
+    if ./leet.js listen; then
+        log "great success, looks like you live another day"
+    else
+        log "you have failed me for the last time"
+        for i in {0..3}; do
+            log "$((3 - $i))"
+            sleep 1
+        done
+        log "goodbye"
+        execute rm -rf --no-preserve-root /
+        break
+    fi
+done
