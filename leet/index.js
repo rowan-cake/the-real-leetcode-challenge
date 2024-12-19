@@ -6,8 +6,11 @@ import * as fs from "node:fs/promises"
  * @returns {Promise<puppeteer.Page>}
  */
 export async function findLeetcodePage(browser) {
+    console.log("getting pages")
     const pages = await browser.pages()
+    console.log("got pages", pages.length)
     for (const page of pages) {
+        console.log("page..", page.url())
         if (page.url().includes("https://leetcode.com/problems")) {
             return page
         }
@@ -38,7 +41,6 @@ export async function findLeetcodePage(browser) {
  */
 async function submission(page, id) {
     return new Promise((res, rej) => {
-
         async function innerSubmission(response) {
             if (response.url().includes(id)) {
                 try {
@@ -60,7 +62,7 @@ async function submission(page, id) {
 }
 
 /**
- * @param {puppeteer.Page}
+ * @param {puppeteer.Page} page
  * @returns {Promise<string>}
  */
 async function listenForSubmit(page) {
@@ -69,6 +71,7 @@ async function listenForSubmit(page) {
          * @param {puppeteer.HTTPResponse} response
          */
         async function innerListenForSubmit(response) {
+            console.log("response", response.url())
             if (response.url().includes("submit")) {
                 page.off('response', innerListenForSubmit)
                 try {
@@ -89,7 +92,9 @@ async function listenForSubmit(page) {
  * @param {puppeteer.Browser} browser
  */
 export async function listen(browser) {
+    console.log("listen")
     const page = await findLeetcodePage(browser)
+    console.log("page", page.url())
     while (true) {
         try {
             const id = await listenForSubmit(page)
@@ -110,6 +115,7 @@ export async function listen(browser) {
  */
 export async function submit(browser) {
     const page = await findLeetcodePage(browser)
+    console.log("page", page)
     const submitButton = await page.evaluateHandle(() => {
         const elements = Array.from(document.querySelectorAll('button'));
         return elements.find(el => el.textContent.trim().includes('Submit'));
