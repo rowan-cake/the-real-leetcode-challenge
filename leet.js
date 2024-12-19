@@ -14,6 +14,7 @@ async function run() {
     const op = process.argv[2];
 
     setTimeout(() => {
+        console.log("exiting due to time limit")
         process.exit(1)
     }, +process.argv[3] || 20 * 60 * 1000);
 
@@ -22,7 +23,6 @@ async function run() {
             await leet.submit(browser)
             break;
         case "listen":
-        console.log("here")
             await leet.listen(browser)
             break;
     }

@@ -45,7 +45,7 @@ async function submission(page, id) {
             if (response.url().includes(id)) {
                 try {
                     const data = /** @type {SubmitResponse} */(await response.json())
-                    if (data.state === "PENDING") {
+                    if (data.state === "PENDING" || data.state === "STARTED") {
                         return
                     }
                     res(data)
@@ -71,8 +71,8 @@ async function listenForSubmit(page) {
          * @param {puppeteer.HTTPResponse} response
          */
         async function innerListenForSubmit(response) {
-            console.log("response", response.url())
             if (response.url().includes("submit")) {
+                console.log("submit found!")
                 page.off('response', innerListenForSubmit)
                 try {
                     const data = await response.json()
@@ -92,9 +92,7 @@ async function listenForSubmit(page) {
  * @param {puppeteer.Browser} browser
  */
 export async function listen(browser) {
-    console.log("listen")
     const page = await findLeetcodePage(browser)
-    console.log("page", page.url())
     while (true) {
         try {
             const id = await listenForSubmit(page)
@@ -104,6 +102,7 @@ export async function listen(browser) {
             if (response.status_msg === "Wrong Answer") {
                 process.exit(1)
             }
+            console.log(response)
             process.exit(0)
         } catch (e) {
         }
