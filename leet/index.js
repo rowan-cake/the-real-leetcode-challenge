@@ -99,7 +99,7 @@ export async function listen(browser) {
             const response = await submission(page, id);
 
             console.log(response.status_msg)
-            if (response.status_msg === "Wrong Answer") {
+            if (response.status_msg === "Wrong Answer" || response.status_msg === "Runtime Error") {
                 process.exit(1)
             }
             console.log(response)
