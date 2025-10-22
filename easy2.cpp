@@ -1,4 +1,5 @@
-#include <math.h> 
+#include <algorithm>
+#include <math.h>
  struct TreeNode {
       int val;
       TreeNode *left;
@@ -10,11 +11,9 @@
 class Solution {
 public:
     int maxDepth(TreeNode* root) {
-        int depth = 0;
         if(root==nullptr){
             return 0;
         }
-        depth++;
-        return depth+max(maxDepth(root->left)+maxDepth(root->right));
+        return 1 + std::max(maxDepth(root->left), maxDepth(root->right));
     }
 };
